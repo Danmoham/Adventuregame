@@ -92,6 +92,10 @@ function fight(user,enemy){
 }
 
 function intro(user,enemy){
+   console.log(`Your stats are the below:`)
+   user.stats()
+   console.log(`The ${enemy.name}'s stats are below: `)
+   enemy.stats()
    let opening = true
    while (opening){
    let attack = prompt(`Would you like to use A) speed attack, B) regular attack`).toUpperCase()
@@ -119,7 +123,7 @@ function levelThree(user){
     ogre.enemy()
     allchar.push(ogre)
     let run = true
-    console.log("Well done! You have done well to defeated the zombie!")
+    console.log("Well done! You have done well to have defeated the zombie! But you are very tired and need to rest as it was a difficult battle!")
     console.log ("You now have two options, A) to build a hut and camp out overnight, however you will risk the chance of being sneak attacked! B) you can carry on walking throught the night, but your health and speed will drop.")
     let answer = prompt("Please select your letter.").toUpperCase()
     while (run === true){
@@ -130,22 +134,32 @@ function levelThree(user){
             user.levelup()
             console.log(`Due to you having a great night sleep you have now levelled up! Please see your new stats below`)
             user.stats()
+            console.log("After your long sleep you have found an ogre who is ready to battle!")
             run = false
-            break
         }else{
-            console.log("You have been Sneak attacked!!")
+            user.health -= user.health * (0.2)
+            user.speed -= user.speed *(0.2)
+            console.log(`You have been Sneak attacked by an ogre! your health is now ${user.health} and your speed is now ${user.speed}!`)
+            run = false
+        
             
         }
         }else if (answer === "B"){
-            user.health += 5
-            console.log(`You have taken the safe choice! Your health has gone up by 5 to ${user.health}!`)
-            levelTwo(user)
+            user.stats()
+            user.health -= (user.health * 0.1)
+            user.speed -= (user.speed *0.1)
+            console.log(`You are very tired so your stats have dropped to ${user.health} for health and ${user.speed} for speed !`)
+            console.log("It is now morning and you have found an ogre!")
             run = false
 
         }else{
         console.log("Sorry your input was not recognised, please strictly enter A or B")}
     
-} }
+}
+ prompt("Please press any key to see the ogre")
+ require('child_process').exec('start level3.html');
+ intro(user,ogre)
+}
 //SECOND LEVEL 
 function levelTwo(user){
     const zombie = new character("zombie","soldier",2)
@@ -155,14 +169,16 @@ function levelTwo(user){
     prompt('A picture of the zombie will now appear in the browser! How will you approach this demon! Please click any key to see the Zombie.')
     require('child_process').exec('start level2.html');
     intro(user,zombie)
+    levelThree(user)
 
 }
 // FIRST LEVEL
 function levelOne(user){
     let run = true
-    console.log(`welcome ${user.name} to your first mission! \n You have come across a jungle and you are in need of water. Please select one of the options below by selecting the correct letter`)
+    console.log(`welcome ${user.name} to your first mission! \n You have come across a jungle and you are in need of water.`)
     prompt ("The picture of the jungle will now appear in the browser. Please click any key to see the picture")
     require('child_process').exec('start level1.html');
+    console.log("Please select one of the options below by selecting the correct letter")
     console.log("A)Go south towards the river where you will find dangerous species on the way. B) take the safe choice and find a water shelter")
     let answer = prompt("Please select your letter.").toUpperCase()
     while (run === true){
@@ -170,7 +186,7 @@ function levelOne(user){
         prompt("You have come across the snake on your adventure! We will see how you will deal with this. Please press any key to continue.")
         if (user.fightstyle === "ninja"){
             user.health += 20
-            console.log(`Congratulations ${user.name}! As you picked the ninja fightstyle you have avoided the snake! You will recieve +20 health, new health ${user.health}`)
+            console.log(`Congratulations ${user.name}! As you picked the ninja fightstyle you have avoided the snake! You will recieve +20 health, your new health is ${user.health}`)
             run = false
             levelTwo(user)
         }else{
@@ -209,7 +225,7 @@ function newgame(){
     console.log("please see fighting styles below!")
     console.log("1) The unit - grants extra health, but lower speed. 2) the ninja - grants high speed, but low health. 3) The soldier, who has slightly more damage, but slightly less speed and health")
     while (fightstyleCheck === false){
-    fightstyle = prompt("Select the number of the fighting style you would like to be: 1,2 or 3? If this has looped the first answer was incorrect")
+    fightstyle = prompt("Select the number of the fighting style you would like to be: 1,2 or 3?")
     fightstyle = parseInt(fightstyle)
     console.log(fightstyle)
         for (let i = 0; i < fightstyleAvailable.length;i++){
@@ -236,10 +252,4 @@ if (user.fightstyle === "ninja"){
 user.callintroduction()
 levelOne(user)
 }  
-//newgame()
-const dummy = new character ("dummy","unit",1)
-dummy.unit()
-for (let i = 0; i < 9;i++){
-console.log(Math.floor(Math.random() * 3))
-}
-// HAVE TO CREATE SEPERATE CLASSES BASED ON NINJA, UNIT AND SOLDIER AND ASSIGN THE CORRECT SCORES TO EACH BASED ON WHAT IS CHOSEN
+newgame()
