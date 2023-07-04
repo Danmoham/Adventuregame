@@ -3,7 +3,7 @@
 ///speed hightens the chance of taking your go again with double goes
 //import { connect } from "http2";
 // require('child_process').exec('start https://www.google.co.in/'); - USE FOR HYPERLINKING
-const prompt = require("prompt-sync")({ sigint: true });
+onst prompt = require("prompt-sync")({ sigint: true });
 const allchar = []
 const allenemies = []
 class character {
@@ -32,9 +32,9 @@ class character {
         this.power = 40;
     }
     enemy() {
-        this.health = 50 + (this.level * 10);
-        this.speed = 40 + (this.level * 8);
-        this.power = 25 + (this.level * 5);
+        this.health = 70 + (this.level * 10);
+        this.speed = 65 + (this.level * 8);
+        this.power = 30 + (this.level * 5);
         allenemies.push(this)
 
     }
@@ -50,19 +50,17 @@ class character {
         this.power -= ((this.level) * 5)
         this.level -= 1
     }
-    restore() {
-        this.health += ((this.level-1) * 10);
-    }
     replenish() {
-        if (this.fightstyle === "ninja") {
-            this.health = 85;
-        } else if (this.fightstyle === "unit") {
-            this.health = 120;
-        } else if (this.fightstyle === "soldier") {
-            this.health = 95;
+        this.health = 0
+        for (let i = 0; i <= this.level; i++) {
+            this.health += (i * 10)
         }
-        for (let i = 0; i < this.level; i++) {
-            this.restore();
+        if (this.fightstyle === "ninja") {
+            this.health += 85;
+        } else if (this.fightstyle === "unit") {
+            this.health += 120;
+        } else if (this.fightstyle === "soldier") {
+            this.health += 95;
         }
 
     }
@@ -70,7 +68,7 @@ class character {
         console.log(`${this.name}'s current level is level ${this.level} and your stats are the following: Health ${this.health}, speed ${this.speed},power: ${this.power}!`);
     }
     miniupgrade(){
-        this.health += 50
+        this.health += 20
     }
     mindowngrade(){
         this.health -= 20
@@ -112,26 +110,36 @@ function intro(user,enemy){
    enemy.stats()
    let opening = true
    while (opening){
-   let attack = prompt(`Would you like to use A) speed attack, B) regular attack`).toUpperCase()
+   console.log("Would you like to use A) speed attack (You will need to have 1.8x the speed of the enemy to perform successfully) , B) regular attack or C) Power attack (You will need to have 1.5x the power of the enemy to perform successfully)")
+   let attack = prompt(`Would you like to use A) speed attack , B) regular attack or C) Power attack`).toUpperCase()
    if (attack === "A"){
-       if (user.speed > (enemy.speed * 1.5)){
-        enemy.health -= user.power *1.5
-        console.log(`Your speed is high enough to inflict a speed attack which grants you 1.5x damage! your enemy is severely injured to ${enemy.health}!`)
+       if (user.speed > (enemy.speed * 1.8)){
+        enemy.health -= user.power *1.2
+        console.log(`Your speed is high enough to inflict a speed attack which grants you 1.2x damage! your enemy is severely injured to ${enemy.health}!`)
         return fight(user,enemy)
        }else{
-        user.health -= enemy.power * 1.5
+        user.health -= enemy.power * 1.4
         console.log(`You were too slow! Your health has dropped to ${user.health}`)
         return fight(user,enemy)
        }
    }else if (attack === "B"){
         return fight(user,enemy)
-   }
+   }else if (attack === "C"){
+    if (user.power > (enemy.power * 1.5)){
+        enemy.health -= user.power *1.3
+        console.log(`Your power is high enough to inflict a power attack which grants you 1.3x damage! your enemy is severely injured to ${enemy.health}!`)
+        return fight(user,enemy)
+       }else{
+        user.health -= enemy.power * 1.3
+        console.log(`You were too weak! Your health has dropped to ${user.health}`)
+        return fight(user,enemy)
+   }}else{
     attack = prompt ("This input is invalid, please strictly type A or B!!")
-   }
+   }}
 }
 
 function bonusLevel(user){
-    prompt ("The bonus level is to kill a chicken and calf its meat for the potion, press any key to proceed!")
+    prompt ("The bonus level is to kill a chicken and calf its heart for the potion, press any key to proceed!")
     let run = true
     const chicken = new character("Chicken", "unit", 0.5)
     chicken.enemy()
@@ -213,7 +221,7 @@ function levelFour (user){
     if (answer === "A"){
         console.log('Good choice! the rats have walked past but they have not noticed you!')
         user.miniupgrade()
-        console.log(`You have also found some stale bread which has boosted your health temporarily by 50 points to ${user.health}!`)
+        console.log(`You have also found some stale bread which has boosted your health temporarily by 20 points to ${user.health}!`)
         run = false
         levelFive(user)
     }else if (answer === "B"){
@@ -264,7 +272,6 @@ function levelThree(user){
             run = false
         }else{
             user.health -= user.health * (0.2)
-            user.speed -= user.speed *(0.2)
             console.log(`You have been Sneak attacked by an ogre! your health is now ${user.health} and your speed is now ${user.speed}!`)
             run = false
         
