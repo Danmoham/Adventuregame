@@ -3,21 +3,31 @@
 ///speed hightens the chance of taking your go again with double goes
 //import { connect } from "http2";
 // require('child_process').exec('start https://www.google.co.in/'); - USE FOR HYPERLINKING
-onst prompt = require("prompt-sync")({ sigint: true });
+//MAIN BOSS IS CALLED Cozuzu
+const prompt = require("prompt-sync")({ sigint: true });
 const allchar = []
 const allenemies = []
+const runArry = []
 class character {
     constructor(name, fightstyle, level) {
         this.name = name;
         this.fightstyle = fightstyle;
         this.level = level;
         allchar.push(this);
-    }
+        if (this.fightstyle === "ninja"){
+            this.ninja()
+        }else if (this.fightstyle === "unit"){
+            this.unit()
+        }else if (this.fightstyle === "soldier"){
+            this.soldier()
+        }else if (this.fightstyle === "enemy")
+            this.enemy()
+        } 
     callintroduction() {
         console.log(`Your character is ${this.name}, who has the fighting style ${this.fightstyle} with stats: Health ${this.health}, speed ${this.speed},power: ${this.power}!`);
     }
     ninja() {
-        this.health = 85,
+            this.health = 85,
             this.speed = 120,
             this.power = 40;
     }
@@ -32,9 +42,20 @@ class character {
         this.power = 40;
     }
     enemy() {
-        this.health = 70 + (this.level * 10);
-        this.speed = 65 + (this.level * 8);
-        this.power = 30 + (this.level * 5);
+        this.health = 70
+        this.speed = 65
+        this.power = 30
+        if (this.level > 1){
+            for (let i = 1; i <= this.level; i++) {
+                this.health += (i * 8)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.speed += (i * 6)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.power += (i * 4)
+            }
+        }
         allenemies.push(this)
 
     }
@@ -51,18 +72,24 @@ class character {
         this.level -= 1
     }
     replenish() {
-        this.health = 0
-        for (let i = 0; i <= this.level; i++) {
-            this.health += (i * 10)
-        }
         if (this.fightstyle === "ninja") {
-            this.health += 85;
+            this.ninja()
         } else if (this.fightstyle === "unit") {
-            this.health += 120;
+            this.unit()
         } else if (this.fightstyle === "soldier") {
-            this.health += 95;
+            this.soldier()
         }
-
+        if (this.level > 1){
+            for (let i = 1; i <= this.level; i++) {
+                this.health += (i * 10)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.speed += (i * 8)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.power += (i * 5)
+            }
+        }
     }
     stats() {
         console.log(`${this.name}'s current level is level ${this.level} and your stats are the following: Health ${this.health}, speed ${this.speed},power: ${this.power}!`);
@@ -76,32 +103,58 @@ class character {
     healthpotion(){
         this.health = this.health * 1.5
     }
+    minipowerupgrade(){
+        this.power = this.power *1.2
+    }
+    powerup(){
+        this.powerup = 1
+    }
+
 }
 
 function fight(user,enemy){
-    console.log("WATCH THE FIGHT COMMENCE!!")
     let run = true
-    while (run){
+    let rand = Math.floor(Math.random() * 2);
+    function userattack(user,enemy){
         enemy.health -= user.power
-        prompt(`You have inflicted ${user.power} damage to bring the openent down to ${enemy.health}, press any key to proceed`)
-        if (enemy.health < 0){
-            run = false
-            break
-        }
+        prompt(`You have inflicted ${user.power} damage to bring the openent down to ${enemy.health}, press any key to proceed`)}
+    function enemyattack(user,enemy){
         user.health -= enemy.power
-        prompt(`You have taken a hit which has dealt ${enemy.power} damage! This has decreased your health to ${user.health}! press any key to proceed.`)
-        if (user.health < 0){
-            run = false
-        }
-    }
+        prompt(`You have taken a hit which has dealt ${enemy.power} damage! This has decreased your health to ${user.health}! press any key to proceed.`)}
+        if (rand === 0){
+            while (run){
+            userattack(user,enemy)
+            if (enemy.health <= 0){
+                run = false
+                break
+            }
+            enemyattack(user,enemy)
+            if (user.health <= 0){
+                run = false
+                break
+            }}
+        }else{
+            while (run){
+            enemyattack(user,enemy)
+            if (user.health <= 0){
+                run = false
+                break
+            } 
+            userattack(user,enemy)
+            if (enemy.health <= 0){
+                run = false
+                break 
+    }}}
+
     if (user.health > enemy.health){
         user.replenish()
         user.levelup()
         prompt(`Congratulations! You have won the fight! Please press any key to see your new stats after levelling up!`)
         user.stats()
     }else{
-        console.log("You have now lost the game! Thanks for playing and be better next time. ")
-        playagain(user)
+        console.log("You have now lost the game! Thanks for playing and be better next time.")
+        console.log(`Your runtime has finished, your character ${user.name} reached Rank ${user.level} as the class ${user.fightstyle}.`)
+        playagain()
     }
 }
 
@@ -110,8 +163,9 @@ function intro(user,enemy){
    enemy.stats()
    let opening = true
    while (opening){
-   console.log("Would you like to use A) speed attack (You will need to have 1.8x the speed of the enemy to perform successfully) , B) regular attack or C) Power attack (You will need to have 1.5x the power of the enemy to perform successfully)")
-   let attack = prompt(`Would you like to use A) speed attack , B) regular attack or C) Power attack`).toUpperCase()
+   console.log("Would you like to use A) speed attack (You will need to have 1.8x the speed of the enemy to perform successfully) , B) perform a light attack (80% power) or C) Power attack (You will need to have 1.5x the power of the enemy to perform successfully)")
+   let attack = prompt(`Would you like to use A) speed attack , B) Light attack or C) Power attack`).toUpperCase()
+   console.log("LET THE BATTLE COMMENCE!")
    if (attack === "A"){
        if (user.speed > (enemy.speed * 1.8)){
         enemy.health -= user.power *1.2
@@ -123,6 +177,8 @@ function intro(user,enemy){
         return fight(user,enemy)
        }
    }else if (attack === "B"){
+        enemy.health -= user.power * 0.8
+        console.log(`Safe choice! You have inflicted a light attack which has dropped your enemies health to ${enemy.health}!`)
         return fight(user,enemy)
    }else if (attack === "C"){
     if (user.power > (enemy.power * 1.5)){
@@ -131,18 +187,73 @@ function intro(user,enemy){
         return fight(user,enemy)
        }else{
         user.health -= enemy.power * 1.3
-        console.log(`You were too weak! Your health has dropped to ${user.health}`)
+        console.log(`You were too weak! Your health has dropped to ${user.health} from a counter attack from the enemy!`)
         return fight(user,enemy)
    }}else{
     attack = prompt ("This input is invalid, please strictly type A or B!!")
    }}
 }
+function levelSeven(user){
+    user.minipowerupgrade()
+    let run = true
+    console.log(`After defeating the troll you have stolen his bone, This has boosted your power to ${user.power} for the next fight!`)
+    prompt("You carry on walking towards the south and you approach a hidden cave! press any key to see the cave")
+    require('child_process').exec('start Cave.html');
+    prompt("You proceed to walk into the cave and find a lost puppy, press any key to see a picture of the puppy!")
+    require('child_process').exec('start dog.html');
+    console.log("You have two options A) to give the puppy the bone. B) Leave the puppy without the bone.")
+    // TO CONTINUE DOING, NEED TO ADD TWO PAGES FOR EACH ANSWER!
+    while (run){
+    let answer = prompt("Please select your letter").toUpperCase()
+    if (answer === "A"){
+        user.replenish()
+        console.log(`You have now gave the Dog the bone, the dog is now Happy! However, your stats now drop to ${user.power}!`)
+        user.powerup()
+        run = false
+    }else if (answer === "B"){
+            console.log(`Your Stats have remained, however this may come back to bite you in the future!`)
+            run = false
+    }else{
+        console.log("Sorry, this is invalid, please try again.")
+    }
+    }
+    console.log("You stumble across a Wizard who has between watching you from a far. You approach the Wizard and tell him how you have been abducted and ask him for help!")
+    prompt("Press any key to see his response")
+    if (user.powerup === 1){
+        user.power = user.power * 1.5
+        require('child_process').exec('start level7.html');
+        user.stats()
+        user.powerup -= 1
+    }else{
+        require('child_process').exec('start level7bad.html');
+        user.stats()
+    }
+
+    //runArry.push("Finish")
+}
+
+
+//SIXTH LEVEL
+function levelSix(user){
+    console.log("You have now left the church and need to use your compass, you start heading south slowly and see a troll! He starts to approach you with a bone in his hand!")
+    prompt("press any key to see picture of the troll.")
+    const troll = new character("Troll","enemy",user.level)
+    require('child_process').exec('start level6.html');
+    console.log("You have no choice but to defend yourself!")
+    prompt("Press any key to proceed to battle")
+    intro(user,troll)
+    if (runArry.length  < 1){
+        levelSeven(user)
+    }
+    
+    
+
+}
 
 function bonusLevel(user){
     prompt ("The bonus level is to kill a chicken and calf its heart for the potion, press any key to proceed!")
     let run = true
-    const chicken = new character("Chicken", "unit", 0.5)
-    chicken.enemy()
+    const chicken = new character("Chicken", "unit", 1)
     intro(user,chicken)
     user.leveldown()
     console.log("Due to the chicken being such a low rank, your previous battle would not affect your stats or level, so you will be levelled down to the below: ")
@@ -154,15 +265,13 @@ function bonusLevel(user){
         let answer = prompt("Please select your letter.").toUpperCase()
         if (answer === "A"){
             console.log('OH NO YOU HAVE CUT THROUGH THE HEART!! YOU WILL NOT RECIEVE THE POTION!')
-            user.powerup = 0
             run = false
         }else if (answer === "B"){
                 console.log(`Not the smartest idea to use brute force, The heart has split!`)
-                user.powerup = 0
                 run = false
         }else if (answer === "C"){
             console.log("Good choice! This seems to have worked, lets take it back to the Witch.")
-            user.powerup = 1
+            user.powerup()
             run = false
         }else{
             console.log("Sorry your input was not recognised, please strictly enter A or B or C")}   
@@ -195,20 +304,20 @@ let run = true
     if (user.powerup > 0){
         user.healthpotion()
         user.powerup -= 1
-        console.log(user.powerup)
         require('child_process').exec('start witchcorrect.html');
         prompt("Congratulations, please press any key to see your stats below going into the next battle!")
         user.stats()
+
     }else{
         require('child_process').exec('start witchincorrect.html');
         prompt("Better luck next time, please press any button to see your stats that will remain!")
         user.stats()
     }
+    levelSix(user)
 }
 
 //FOURTH LEVEL
 function levelFour (user){
-    let run = true
     console.log(`You have now escaped the forest and defeated the ogre! You have now reached a tunnel that leads to the underground for food!`)
     console.log(`However, there are many many mutant rats in the undergrounds!!`)
     prompt("The rats are too dangerous to face! If faced you will be instantly killed! Please press any key to see the rat.")
@@ -216,6 +325,7 @@ function levelFour (user){
     prompt("please press any key to see the underground!")
     require('child_process').exec('start underground.html');
     console.log("You will have to hide! You see three spots avaiable to hide, please pick your choice! A) under the stairs, B) lying down beside the pipes, C) in the elevator shaft")
+    let run = true
     while (run === true){
     let answer = prompt("Please select your letter.").toUpperCase()
     if (answer === "A"){
@@ -223,12 +333,16 @@ function levelFour (user){
         user.miniupgrade()
         console.log(`You have also found some stale bread which has boosted your health temporarily by 20 points to ${user.health}!`)
         run = false
+        if (runArry.length  < 1){
         levelFive(user)
+    }
     }else if (answer === "B"){
             user.mindowngrade()
             console.log(`Not a bad choice! You have avoided the rats, but you still have no food and are very hungry! Your health has dropped by 20 points temporarily to ${user.health}!`)
             run = false
-            levelFive(user)
+            if (runArry.length < 1){
+                levelFive(user)
+                }
     }else if (answer === "C"){
         let minirun = true
         while (minirun === true){
@@ -237,11 +351,16 @@ function levelFour (user){
             console.log("YOUR SPEED WAS NO MATCH FOR THE RATS THEY HAVE EATEN YOU ALIVE!!")
             minirun = false
             console.log("GAME OVER!")
-            playagain(user)
+            console.log(`Your runtime has finished, your character ${user.name} reached Rank ${user.level} as the class ${user.fightstyle}.`)
+            run = false
+            playagain()
         }else if (action === "B"){
             console.log("They have not deemed you as a threat and passed you by with no caution! Well done!!")
+            if (runArry.length < 1){
             levelFive(user)
+            }
             minirun = false
+            run = false
         }else{
             console.log("Sorry your input was not recognised, please strictly enter A or B")
         }  }
@@ -254,11 +373,10 @@ function levelFour (user){
 
 //THIRD LEVEL
 function levelThree(user){
-    const ogre = new character("ogre","unit",4)
-    ogre.enemy()
+    const ogre = new character("ogre","enemy",user.level+1)
     let run = true
     console.log("Well done! You have done well to have defeated the zombie! But you are very tired and need to rest as it was a difficult battle!")
-    console.log ("You now have two options, A) to build a hut and camp out overnight, however you will risk the chance of being sneak attacked! B) you can carry on walking throught the night, but your health and speed will drop.")
+    console.log ("You now have two options, A) to build a hut and camp out overnight, however you will risk the chance of being sneak attacked! B) you can carry on walking throught the night, but your health will drop.")
     while (run === true){
     let answer = prompt("Please select your letter.").toUpperCase()
     if (answer === "A"){
@@ -272,7 +390,7 @@ function levelThree(user){
             run = false
         }else{
             user.health -= user.health * (0.2)
-            console.log(`You have been Sneak attacked by an ogre! your health is now ${user.health} and your speed is now ${user.speed}!`)
+            console.log(`You have been Sneak attacked by an ogre! your health is now ${user.health}!`)
             run = false
         
             
@@ -280,8 +398,7 @@ function levelThree(user){
         }else if (answer === "B"){
             user.stats()
             user.health -= (user.health * 0.1)
-            user.speed -= (user.speed *0.1)
-            console.log(`You are very tired so your stats have dropped to ${user.health} for health and ${user.speed} for speed !`)
+            console.log(`You are very tired so your stats have dropped to ${user.health} for health!`)
             console.log("It is now morning and you have found an ogre!")
             run = false
 
@@ -292,17 +409,22 @@ function levelThree(user){
  prompt("Please press any key to see the ogre")
  require('child_process').exec('start level3.html');
  intro(user,ogre)
+ if (runArry.length < 1){
  levelFour(user)
+ }
 }
 //SECOND LEVEL 
 function levelTwo(user){
-    const zombie = new character("zombie","soldier",2)
-    zombie.enemy()
+    const zombie = new character("zombie","enemy",user.level+1)
     console.log(`You have just hydrated yourself and have found a ${zombie.name} that is level ${zombie.level} with the stats\n Health : ${zombie.health}, Speed ${zombie.speed} and Power ${zombie.power}!`)
+    prompt("Please press any key to see how the fights will play out in the game!")
+    require('child_process').exec('start fightsystem.html');
     prompt('A picture of the zombie will now appear in the browser! How will you approach this demon! Please click any key to see the Zombie.')
     require('child_process').exec('start level2.html');
     intro(user,zombie)
+    if (runArry.length < 1){
     levelThree(user)
+    }
 
 }
 // FIRST LEVEL
@@ -379,30 +501,23 @@ function newgame(){
 }
 const user = new character(name,fightstyle,1)
 console.log(`The name of your player is ${user.name}, with the fightstyle ${user.fightstyle}!`)
-if (user.fightstyle === "ninja"){
-    user.ninja()
-}else if (user.fightstyle === "unit"){
-    user.unit()
-}else if (user.fightstyle === "soldier"){
-    user.soldier()
-}
 user.callintroduction()
 missionstatement()
 levelOne(user)
 }  
 
-function playagain(user){
-    let run = true
-    console.log(`Your runtime has finished, your character ${user.name} reached Rank ${user.level} as the class ${user.fightstyle}.`)
-    while (run === true){
-        let again = prompt("Would you like to play again? A) yes, B) No: ").toUpperCase()
+function playagain(){
+    let finish = false
+    while (finish === false){
+        let again = prompt("Would you like to start a new game? A) yes, B) No: ").toUpperCase()
         if (again === ("A") || again === "YES"){
             newgame()
-            run = false
+            finish = true
             break
         }else if (again === "B" || again === "NO"){
-            console.log("your game has now finished!")
-            run = false
+            console.log("your game has now finished")
+            runArry.push("FINISH")
+            finish = true
             break
         }else{
             console.log("Sorry, your input was not valid, please retype your outcome.")
@@ -410,4 +525,9 @@ function playagain(user){
     }
 
 }
-newgame()
+//playagain()
+const dummy = new character("Dummy","ninja",4)
+dummy.replenish()
+levelFive(dummy)
+//dummy.levelup()
+//dummy.callintroduction()
