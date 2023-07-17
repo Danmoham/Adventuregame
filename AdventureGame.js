@@ -20,11 +20,69 @@ class character {
             this.unit()
         }else if (this.fightstyle === "soldier"){
             this.soldier()
-        }else if (this.fightstyle === "enemy")
+        }else if (this.fightstyle === "enemy"){
             this.enemy()
-        } 
+        }else if(this.fightstyle === "lightenemy"){
+            this.lightEnemy()
+        }else if(this.fightstyle === "heavyenemy"){
+            this.heavyEnemy()
+    }else if (this.fightstyle === "bossenemy"){
+            this.bossEnemy()
+    }}
+        
     callintroduction() {
         console.log(`Your character is ${this.name}, who has the fighting style ${this.fightstyle} with stats: Health ${this.health}, speed ${this.speed},power: ${this.power}!`);
+    }
+    bossEnemy(){
+        this.health = 100
+        this.speed = 70
+        this.power = 45
+        if (this.level > 1){
+            for (let i = 1; i <= this.level; i++) {
+                this.health += (i * 8)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.speed += (i * 6)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.power += (i * 5)
+            }
+    }
+    }
+
+    heavyEnemy(){
+        this.health = 80
+        this.speed = 60
+        this.power = 35
+        if (this.level > 1){
+            for (let i = 1; i <= this.level; i++) {
+                this.health += (i * 9)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.speed += (i * 3)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.power += (i * 4)
+            }
+    }
+    allenemies.push(this)
+}
+    lightEnemy(){
+        this.health = 60
+        this.speed = 65
+        this.power = 35
+        if (this.level > 1){
+            for (let i = 1; i <= this.level; i++) {
+                this.health += (i * 6)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.speed += (i * 8)
+            }
+            for (let i = 1; i <= this.level; i++) {
+                this.power += (i * 4)
+            }
+        }
+        allenemies.push(this)
     }
     ninja() {
             this.health = 85,
@@ -106,11 +164,145 @@ class character {
     minipowerupgrade(){
         this.power = this.power *1.2
     }
-    powerup(){
+    powerupgrade(){
         this.powerup = 1
     }
 
+
 }
+function tictactoe (user){
+    let winner;
+    let goesCounter = 0
+    const userTictac = "X"
+    const aiTicTac = "O"
+    const aiNums = []
+    const userNums = []
+    const prompt = require("prompt-sync")({ sigint: true });
+    const board = ["-","-","-",
+                   "-","-","-",
+                   "-","-","-"]
+    
+    
+    
+    function tictacIntro(user){
+    console.log("Your board will look like the below - please use this for reference numbers \n [0],[1],[2]\n [3],[4],[5]\n [6],[7],[8]")
+    console.log(board)
+    console.log("You will need to pick your numbers accordingly to win the game!")
+    console.log("You will be user X, however the AI (user O) will always go first!")
+    }
+    
+    function userturn(user){
+        let run = true
+        while (run){
+        let userInput = prompt("Please pick a number from 0-8!")
+        userInput = parseInt(userInput)
+        
+        if (userInput > 8 || userInput < 0 || isNaN(userInput)){
+            console.log("please select a new number that is between 0 and 8!!!")
+        }else if (board[userInput] !== "-"){
+            console.log("This space has already been taken! Please try a different one!")
+        }else{
+            board.splice(userInput,1,userTictac)
+            userNums.push(userInput)
+            run = false
+        }
+        }
+    console.log(board)
+    goesCounter +=1
+    }
+    
+    function aiTurn(){
+        let run = true
+        while (run){
+        let aiInput = Math.floor(Math.random() * 89)
+        if (board[aiInput] === "-"){
+            board.splice(aiInput,1,aiTicTac)
+            aiNums.push(aiInput)
+            run = false
+        
+    }
+    }
+    console.log(board)
+    goesCounter += 1
+    }
+    
+      function isSolved() {
+        //const solutions = [[0,1,2],[0,3,6],[0,4,8],[1,4,7],[2,4,6],[3,4,5],[6,7,8]] 
+          if ((board[0] === board[1]) && (board[1] === board[2]) && (board[0] !== "-")){
+            winner = board[0]
+            console.log(`${board[0]} wins!`)
+            goesCounter = 9
+          }else if ((board[0] === board[3]) && (board[3] === board[6]) && (board[0] !== "-")){
+            winner = board[0]
+            console.log(`${board[0]} wins!`)
+            goesCounter = 9
+         }else if ((board[0] === board[4]) && (board[4] === board[8]) && (board[0] !== "-")){
+          winner = board[0]
+          console.log(`${board[0]} wins!`)
+          goesCounter = 9
+         }else if ((board[1] === board[4]) && (board[4] === board[7]) && (board[1] !== "-")){
+          winner = board[1]
+          console.log(`${board[1]} wins!`)
+          goesCounter = 9
+        }else if ((board[2] === board[5]) && (board[5] === board[8]) && (board[2] !== "-")){
+          winner = board[2]
+          console.log(`${board[2]} wins!`)
+          goesCounter = 9
+        }else if ((board[3] === board[4]) && (board[4] === board[5]) && (board[3] !== "-")){
+          winner = board[3]
+          console.log(`${board[3]} wins!`)
+          goesCounter = 9
+        }else if ((board[6] === board[7]) && (board[7] === board[8]) && board[6] !== "-"){
+          winner = board[6]
+          console.log(`${board[6]} wins!`)
+          goesCounter = 9
+        }else if ((board[2] === board[4]) && (board[4] === board[6]) && (board[2] !== "-")){
+            winner = board[2]
+            console.log(`${board[2]} wins!`)
+            goesCounter = 9
+        }
+        let dashCount = 0;
+        for (let i = 0; i < board.length;i++){
+          if (board[i] !== "-"){
+          dashCount +=1
+          }
+        }
+        if (dashCount === 9){
+          goesCounter = 9
+        }
+      
+        }
+    
+       function rungame(user){
+        tictacIntro()
+        while (goesCounter < 9){
+            aiTurn()
+            isSolved()
+            if (goesCounter === 9){
+              break
+            }
+            userturn(user)
+            isSolved()
+            if (goesCounter === 9){
+              break
+            }
+        }
+    if (winner === userTictac){
+      console.log (`${user.name} has won! Well done!`)
+      user.levelup()
+      user.stats()
+    }else if (winner === aiTicTac){
+    console.log("The Ai as won! You have now lost the game! YOU HAVE NOW BEEN TERMINATED!")
+    runArry.push("You have lost!")
+    playagain()
+    }else{
+      console.log("It was a draw! your stats will remain")
+      user.stats()
+    }
+    }
+    
+      rungame(user)
+    }
 
 function fight(user,enemy){
     let run = true
@@ -163,16 +355,16 @@ function intro(user,enemy){
    enemy.stats()
    let opening = true
    while (opening){
-   console.log("Would you like to use A) speed attack (You will need to have 1.8x the speed of the enemy to perform successfully) , B) perform a light attack (80% power) or C) Power attack (You will need to have 1.5x the power of the enemy to perform successfully)")
+   console.log("Would you like to use A) speed attack (You will need to have 1.5x the speed of the enemy to perform successfully) , B) perform a light attack (80% power) or C) Power attack (You will need to have 1.25x the power of the enemy to perform successfully)")
    let attack = prompt(`Would you like to use A) speed attack , B) Light attack or C) Power attack`).toUpperCase()
    console.log("LET THE BATTLE COMMENCE!")
    if (attack === "A"){
-       if (user.speed > (enemy.speed * 1.8)){
+       if (user.speed > (enemy.speed * 1.49)){
         enemy.health -= user.power *1.2
         console.log(`Your speed is high enough to inflict a speed attack which grants you 1.2x damage! your enemy is severely injured to ${enemy.health}!`)
         return fight(user,enemy)
        }else{
-        user.health -= enemy.power * 1.4
+        user.health -= enemy.power * 1.2
         console.log(`You were too slow! Your health has dropped to ${user.health}`)
         return fight(user,enemy)
        }
@@ -181,18 +373,94 @@ function intro(user,enemy){
         console.log(`Safe choice! You have inflicted a light attack which has dropped your enemies health to ${enemy.health}!`)
         return fight(user,enemy)
    }else if (attack === "C"){
-    if (user.power > (enemy.power * 1.5)){
+    if (user.power > (enemy.power * 1.24)){
         enemy.health -= user.power *1.3
         console.log(`Your power is high enough to inflict a power attack which grants you 1.3x damage! your enemy is severely injured to ${enemy.health}!`)
         return fight(user,enemy)
        }else{
-        user.health -= enemy.power * 1.3
+        user.health -= enemy.power * 1.2
         console.log(`You were too weak! Your health has dropped to ${user.health} from a counter attack from the enemy!`)
         return fight(user,enemy)
    }}else{
     attack = prompt ("This input is invalid, please strictly type A or B!!")
    }}
 }
+//Level9 - MINI BOSS BATTLE
+function levelNine(user){
+    console.log("You have now found the dreaded Mansion!!")
+    prompt("Please press any key to see the mansion!")
+    require('child_process').exec('start level9.html');
+    console.log("You begin to walk towards the mansion and out of nowhere appears a Undead Knight protecting the mansion!")
+    const knight = new character("UNDEADKNIGHT", "bossenemy",user.level)
+    prompt("Press any key to see what the knight has to say!");
+    require('child_process').exec('start knight.html');
+    prompt("There is nothing you can do except fight the beast! press any key to proceed")
+    intro(user,knight)
+    if (runArry.length < 1){
+        console.log("Well done you have Won!")
+    }else{
+        console.log("You have now lost the game!")
+    }
+}
+
+
+//Level 8 = tictac toe mission
+function levelEight(user){
+    console.log("You have reached the entrance to the South! However, to get into the south you need a specific IQ! This game of Tictactoe will test this!")
+    prompt("please press any key to see the entrance to the south!")
+    require('child_process').exec('start gate.html');
+    console.log("If you win the game you will get be levelled up! If not you will be terminated on the spot and If you draw you will be allowed through but not recieve any upgrades!")
+    prompt("Press any key to proceed!")
+    tictactoe(user)
+    if (runArry.length < 1){
+        console.log("Well done you have passed through the gates!")
+        levelNine(user)
+    }else{
+        console.log("You have now lost the game!")
+    }
+}
+
+
+function monsterlevel(user){
+    let run = true
+    console.log("You find an exit to the Cave which will take you south towards the mansion, but you see a creepy creature from a far! You start to approach creature, the creature jumps out of the shadows to Attack!")
+    prompt("Press any key to see what the creature says!")
+    require('child_process').exec('start monsterlevel.html');
+    const monster = new character("monster","enemy",user.level+3)
+    console.log(`The ${monster.name} is level ${monster.level} with the stats - Health : ${monster.health}, Speed : ${monster.speed} and Power : ${monster.power}!`)
+    console.log("You have a few options! A) Battle the monster and try to defeat him with the odds stacked against you, B) Risk using a sneak assasination, but this will only work with certain Fightstyles or C) Run away!")
+    while (run){
+    let answer = prompt("Please select your letter").toUpperCase()
+    if (answer === "A"){
+        intro(user,monster)
+        run = false
+    }else if (answer === "B"){
+            if (user.fightstyle === "ninja"){
+                user.levelup()
+                console.log(`Well done you have sneak attacked the Monster and killed him! Your level has gone up to ${user.level}!`)
+                user.stats()
+                run = false
+            }else{
+                console.log("THE MONSTER SAW YOUR ATTACK COMING AND RIPPED YOUR HEART OUT! YOU HAVE NOW DIED!")
+                runArry.push(["Finish"])
+                run = false
+            }
+    }else if (answer === "C"){
+        console.log("You have ran away and avoided the monster! Lets hope you do not see him again!")
+        run = false
+    }else{
+        console.log("Sorry, your input is not recognised please try again")
+    }
+    }
+    if (runArry.length  < 1){
+        console.log("Well done, you have escaped and are through to the next mission")
+        levelEight(user)
+    }
+
+
+}
+
+//LEVEL SEVEN
 function levelSeven(user){
     user.minipowerupgrade()
     let run = true
@@ -207,8 +475,8 @@ function levelSeven(user){
     let answer = prompt("Please select your letter").toUpperCase()
     if (answer === "A"){
         user.replenish()
+        user.powerupgrade()
         console.log(`You have now gave the Dog the bone, the dog is now Happy! However, your stats now drop to ${user.power}!`)
-        user.powerup()
         run = false
     }else if (answer === "B"){
             console.log(`Your Stats have remained, however this may come back to bite you in the future!`)
@@ -228,7 +496,7 @@ function levelSeven(user){
         require('child_process').exec('start level7bad.html');
         user.stats()
     }
-
+    monsterlevel(user)
     //runArry.push("Finish")
 }
 
@@ -237,7 +505,7 @@ function levelSeven(user){
 function levelSix(user){
     console.log("You have now left the church and need to use your compass, you start heading south slowly and see a troll! He starts to approach you with a bone in his hand!")
     prompt("press any key to see picture of the troll.")
-    const troll = new character("Troll","enemy",user.level)
+    const troll = new character("Troll","heavyenemy",user.level + 1)
     require('child_process').exec('start level6.html');
     console.log("You have no choice but to defend yourself!")
     prompt("Press any key to proceed to battle")
@@ -271,13 +539,14 @@ function bonusLevel(user){
                 run = false
         }else if (answer === "C"){
             console.log("Good choice! This seems to have worked, lets take it back to the Witch.")
-            user.powerup()
+            user.powerupgrade()
             run = false
         }else{
             console.log("Sorry your input was not recognised, please strictly enter A or B or C")}   
 
 }
 prompt("please press any key to continue")
+
 }
 
 //FIFTH LEVEL
@@ -373,7 +642,7 @@ function levelFour (user){
 
 //THIRD LEVEL
 function levelThree(user){
-    const ogre = new character("ogre","enemy",user.level+1)
+    const ogre = new character("ogre","heavyenemy",user.level)
     let run = true
     console.log("Well done! You have done well to have defeated the zombie! But you are very tired and need to rest as it was a difficult battle!")
     console.log ("You now have two options, A) to build a hut and camp out overnight, however you will risk the chance of being sneak attacked! B) you can carry on walking throught the night, but your health will drop.")
@@ -415,7 +684,7 @@ function levelThree(user){
 }
 //SECOND LEVEL 
 function levelTwo(user){
-    const zombie = new character("zombie","enemy",user.level+1)
+    const zombie = new character("zombie","lightenemy",user.level+1)
     console.log(`You have just hydrated yourself and have found a ${zombie.name} that is level ${zombie.level} with the stats\n Health : ${zombie.health}, Speed ${zombie.speed} and Power ${zombie.power}!`)
     prompt("Please press any key to see how the fights will play out in the game!")
     require('child_process').exec('start fightsystem.html');
@@ -525,9 +794,9 @@ function playagain(){
     }
 
 }
-//playagain()
-const dummy = new character("Dummy","ninja",4)
-dummy.replenish()
-levelFive(dummy)
+playagain()
+//const dummy = new character("Dummy","ninja",6)
+//dummy.replenish()
+//levelNine(dummy)
 //dummy.levelup()
 //dummy.callintroduction()
