@@ -39,13 +39,14 @@ class character {
         this.power = 45
         if (this.level > 1){
             for (let i = 1; i <= this.level; i++) {
-                this.health += (i * 8)
+                Math.round(this.health += (i * 8))
+
             }
             for (let i = 1; i <= this.level; i++) {
-                this.speed += (i * 6)
+                Math.round(this.speed += (i * 6))
             }
             for (let i = 1; i <= this.level; i++) {
-                this.power += (i * 5)
+                Math.round(this.power += (i * 5))
             }
     }
     }
@@ -153,20 +154,33 @@ class character {
         console.log(`${this.name}'s current level is level ${this.level} and your stats are the following: Health ${this.health}, speed ${this.speed},power: ${this.power}!`);
     }
     miniupgrade(){
-        this.health += 20
+        this.health += (this.health * 0.1)
+        Math.round(this.health)
     }
     mindowngrade(){
-        this.health -= 20
+        this.health -= (this.health * 0.1)
+        Math.round(this.health)
     }
     healthpotion(){
         this.health = this.health * 1.5
+        Math.round(this.health)
     }
     minipowerupgrade(){
         this.power = this.power *1.2
+        Math.round(this.health)
     }
     powerupgrade(){
         this.powerup = 1
     }
+    majorDowngrade(){
+        this.health -= (this.health * 0.3)
+        Math.round(this.health)
+    }
+    majorUpgrade(){
+        this.health += (this.health * 0.3)
+        Math.round(this.health)
+    }
+
 
 
 }
@@ -360,25 +374,25 @@ function intro(user,enemy){
    console.log("LET THE BATTLE COMMENCE!")
    if (attack === "A"){
        if (user.speed > (enemy.speed * 1.49)){
-        enemy.health -= user.power *1.2
+        enemy.health -= Math.round(user.power *1.2)
         console.log(`Your speed is high enough to inflict a speed attack which grants you 1.2x damage! your enemy is severely injured to ${enemy.health}!`)
         return fight(user,enemy)
        }else{
-        user.health -= enemy.power * 1.2
+        user.health -= Math.round(enemy.power * 1.2)
         console.log(`You were too slow! Your health has dropped to ${user.health}`)
         return fight(user,enemy)
        }
    }else if (attack === "B"){
-        enemy.health -= user.power * 0.8
+        enemy.health -= Math.round(user.power * 0.8)
         console.log(`Safe choice! You have inflicted a light attack which has dropped your enemies health to ${enemy.health}!`)
         return fight(user,enemy)
    }else if (attack === "C"){
     if (user.power > (enemy.power * 1.24)){
-        enemy.health -= user.power *1.3
+        enemy.health -= Math.round(user.power *1.3)
         console.log(`Your power is high enough to inflict a power attack which grants you 1.3x damage! your enemy is severely injured to ${enemy.health}!`)
         return fight(user,enemy)
        }else{
-        user.health -= enemy.power * 1.2
+        user.health -= Math.round(enemy.power * 1.2)
         console.log(`You were too weak! Your health has dropped to ${user.health} from a counter attack from the enemy!`)
         return fight(user,enemy)
    }}else{
@@ -387,11 +401,50 @@ function intro(user,enemy){
 }
 //Level9 - MINI BOSS BATTLE
 function levelNine(user){
+    let run = true
     console.log("You have now found the dreaded Mansion!!")
     prompt("Please press any key to see the mansion!")
     require('child_process').exec('start level9.html');
     console.log("You begin to walk towards the mansion and out of nowhere appears a Undead Knight protecting the mansion!")
-    const knight = new character("UNDEADKNIGHT", "bossenemy",user.level)
+    const knight = new character("UNDEADKNIGHT", "bossenemy",user.level+1)
+    knight.stats()
+    console.log("There are three ways you can approach this depending on your trait! A) use a Barge attack! B) Sneak attack or C) Use a direct Slash attack!")
+    while (run){
+        let answer = prompt("Please select your letter").toUpperCase()
+        if (answer === "A"){
+                if (user.fightstyle !== "unit"){
+                    user.majorDowngrade()
+                    console.log(`You was not the correct fight style, so you have suffered a counter blow! Your health is now ${user.health}!`)
+                    run = false
+                }else{
+                    knight.majorDowngrade()
+                    console.log(`Because your fightstyle was ${user.fightstyle}, you have damaged the enemy significantly! Their health now is ${knight.health}!`)
+                    run = false
+                }
+        }else if (answer === "B"){
+            if (user.fightstyle !== "ninja"){
+                user.majorDowngrade()
+                console.log(`You was not the correct fight style, so you have suffered a counter blow! Your health is now ${user.health}!`)
+                run = false
+            }else{
+                knight.majorDowngrade()
+                console.log(`Because your fightstyle was ${user.fightstyle}, you have damaged the enemy significantly! Their health now is ${knight.health}!`)
+                run = false
+            }
+        }else if (answer === "C"){
+            if (user.fightstyle !== "soldier"){
+                user.majorDowngrade()
+                console.log(`You was not the correct fight style, so you have suffered a counter blow! Your health is now ${user.health}!`)
+                run = false
+            }else{
+                knight.majorDowngrade()
+                console.log(`Because your fightstyle was ${user.fightstyle}, you have damaged the enemy significantly! Their health now is ${knight.health}!`)
+                run = false
+            }
+        }else{
+            console.log("Sorry, your input is not recognised please try again")
+        }
+        }
     prompt("Press any key to see what the knight has to say!");
     require('child_process').exec('start knight.html');
     prompt("There is nothing you can do except fight the beast! press any key to proceed")
@@ -794,9 +847,9 @@ function playagain(){
     }
 
 }
-playagain()
-//const dummy = new character("Dummy","ninja",6)
-//dummy.replenish()
-//levelNine(dummy)
+//playagain()
+const dummy = new character("ebbi","ninja",5)
+dummy.replenish()
+levelSeven(dummy)
 //dummy.levelup()
 //dummy.callintroduction()
