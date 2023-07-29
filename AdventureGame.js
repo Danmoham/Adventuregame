@@ -1,9 +1,4 @@
-//to create a user prototype which will have three different variations, the unit, the ninja or the soldier
-//start with a new game where you will select all of your details
-///speed hightens the chance of taking your go again with double goes
-//import { connect } from "http2";
-// require('child_process').exec('start https://www.google.co.in/'); - USE FOR HYPERLINKING
-//MAIN BOSS IS CALLED Cozuzu
+const { Console } = require("console");
 const prompt = require("prompt-sync")({ sigint: true });
 const allchar = []
 const allenemies = []
@@ -166,7 +161,11 @@ class character {
         Math.round(this.health)
     }
     minipowerupgrade(){
-        this.power = this.power *1.2
+        this.power = this.power * 1.2
+        Math.round(this.health)
+    }
+    minipowerdowngrade(){
+        this.power = this.power * 0.9
         Math.round(this.health)
     }
     powerupgrade(){
@@ -363,7 +362,6 @@ function fight(user,enemy){
         playagain()
     }
 }
-
 function intro(user,enemy){
    user.stats()
    enemy.stats()
@@ -399,6 +397,113 @@ function intro(user,enemy){
     attack = prompt ("This input is invalid, please strictly type A or B!!")
    }}
 }
+//
+function finalLevel(user){
+    const cozuzu = new character("Cozuzu","bossenemy",user.level+2)
+    console.log("You finally find Cozuzu, sitting on his chair of skulls!")
+    prompt("Press any key to see what he has to say")
+    require('child_process').exec('start mainboss.html');
+    console.log("There are three potions next to you, depending on your perk depends if they will buff you or not. These potions are:")
+    console.log("A) The potion for the most durable, B) The potion for men who hide in the shadows or C) The potion for the most powerful beings.")
+    let run = true
+    while (run){
+        let answer = prompt("Please select your letter").toUpperCase()
+        if (answer === "A"){
+                if (user.fightstyle !== "unit"){
+                    user.health = user.health * (.9)
+                    console.log(`You was not the correct fight style, so your health has dropped by 10%! Your health is now ${user.health}!`)
+                    run = false
+                }else{
+                    user.health = user.health * 2
+                    console.log(`Because your fightstyle was ${user.fightstyle}, your health has increased by 100% to ${user.health}!`)
+                    run = false
+                }
+        }else if (answer === "B"){
+            if (user.fightstyle !== "ninja"){
+                user.speed = user.speed * 0.9
+                console.log(`You was not the correct fight style, so your speed has dropped by 10%! Your speed is now ${user.speed}!`)
+                run = false
+            }else{
+                user.speed = user.speed * 2
+                user.minipowerupgrade()
+                console.log(`Because your fightstyle was ${user.fightstyle}, your damage has increased by 20% to ${user.power} and speed has increased to ${user.speed}!`)
+                run = false
+            }
+        }else if (answer === "C"){
+            if (user.fightstyle !== "soldier"){
+                user.minipowerdowngrade()
+                console.log(`You was not the correct fight style, so your damage has dropped by 10%! Your power is now ${user.power}!`)
+                run = false
+            }else{
+                user.power = user.power * 2
+                user.health = user.health * 1.2
+                console.log(`Because your fightstyle was ${user.fightstyle}, your damage has increased by 20% to ${user.power} and your health has increased to ${user.health}!`)
+                run = false
+            }
+        }else{
+            console.log("Sorry, your input is not recognised please try again")
+        }
+        }
+    console.log("You will now proceed into battle!")
+    intro(user,cozuzu)
+    if (runArry.length < 1){
+        prompt("WELL DONE YOU HAVE DEFEATED COZUZU! press any key to take his magic teleporation portion")
+        require('child_process').exec('start teleport.html');
+        prompt("Thank you for Playing! If you want to play again you will now be re-routed to the initial start section. Press any key to continue")
+        playagain()
+
+    }else{
+        console.log("You have now lost the game!")
+    }
+    
+}
+//BREAK WINDOW BOSS
+function miniBoss1(user){
+    const skeleton = new character("SKELETON", "bossenemy",user.level)
+    prompt("You have found a skeleton in the halls of the mansion! Press any key to see what he has to say!")
+    require('child_process').exec('start skeleton.html');
+    intro(user,skeleton)
+    if (runArry.length < 1){
+        prompt("Well done you have Won! Press any key to see what the Skeleton has to say")
+        require('child_process').exec('start skeleton1.html');
+        prompt("PRESS ANY KEY TO PROCEED TO YOUR FINAL BATTLE!!")
+        finalLevel(user)
+    }else{
+        console.log("You have now lost the game!")
+    }
+}
+//FRONT DOOR BOSS
+function miniBoss2(user){
+    const demon = new character("DEMON", "bossenemy",user.level)
+    prompt("You have found a demon at the front the mansion! Press any key to see what he has to say!")
+    require('child_process').exec('start demon.html');
+    intro(user,demon)
+    if (runArry.length < 1){
+        console.log("Well done you have Won! He was blocking your path now you can see straight through to Cozuzu's room!")
+        prompt("PRESS ANY KEY TO PROCEED TO YOUR FINAL BATTLE!!")
+        finalLevel(user)
+    }else{
+        console.log("You have now lost the game!")
+    }
+}
+function levelTen (user){
+    console.log("Well Done! You have defeated the undead Knight! There are two ways you can enter the mansion!")
+    console.log("A) Break the window and jump in! B) sneak in through the front door!")
+    let run = true
+    while (run){
+        let answer = prompt("Please select your letter").toUpperCase()
+        if (answer === "A"){
+            miniBoss1(user)
+            run = false
+    }else if (answer === "B"){
+        miniBoss2(user)
+        run = false
+    }else{
+        console.log("Sorry, your input is not recognised please try again")
+    }
+    }
+
+}
 //Level9 - MINI BOSS BATTLE
 function levelNine(user){
     let run = true
@@ -408,6 +513,7 @@ function levelNine(user){
     console.log("You begin to walk towards the mansion and out of nowhere appears a Undead Knight protecting the mansion!")
     const knight = new character("UNDEADKNIGHT", "bossenemy",user.level+1)
     knight.stats()
+    user.stats()
     console.log("There are three ways you can approach this depending on your trait! A) use a Barge attack! B) Sneak attack or C) Use a direct Slash attack!")
     while (run){
         let answer = prompt("Please select your letter").toUpperCase()
@@ -451,6 +557,7 @@ function levelNine(user){
     intro(user,knight)
     if (runArry.length < 1){
         console.log("Well done you have Won!")
+        levelTen(user)
     }else{
         console.log("You have now lost the game!")
     }
@@ -847,9 +954,9 @@ function playagain(){
     }
 
 }
-//playagain()
-const dummy = new character("ebbi","ninja",5)
-dummy.replenish()
-levelSeven(dummy)
+playagain()
+//const dummy = new character("dan","ninja",8)
+//dummy.replenish()
+//finalLevel(dummy)
 //dummy.levelup()
 //dummy.callintroduction()
